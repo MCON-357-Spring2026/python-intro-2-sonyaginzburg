@@ -36,16 +36,17 @@ Example:
 
 class Product:
     def __init__(self, name: str, price: float, quantity: int = 0):
-        # TODO: Initialize instance attributes
-        pass
+        self.name = name
+        self.price = price
+        self.quantity = quantity
+
 
     def get_total_value(self) -> float:
-        # TODO: Return price * quantity
-        pass
+        return self.price * self.quantity
+
 
     def is_in_stock(self) -> bool:
-        # TODO: Return True if quantity > 0
-        pass
+        return self.quantity > 0
 
 
 # =============================================================================
@@ -79,25 +80,34 @@ Example:
 """
 
 class BankAccount:
-    # TODO: Add class attributes here
+    bank_name: "Python Bank"
+    total_accounts: 0
+
 
     def __init__(self, account_number: str, owner: str, balance: float = 0.0):
-        # TODO: Initialize instance attributes
-        # TODO: Increment total_accounts
-        pass
+        #  Initialize instance attributes
+        self.account_number = account_number
+        self.owner = owner
+        self.balance = balance
+        BankAccount.total_accounts += 1
+
 
     def deposit(self, amount: float) -> float:
-        # TODO: Add amount to balance and return new balance
-        pass
+        #  Add amount to balance and return new balance
+        self.balance += amount
+        return self.balance
 
     def withdraw(self, amount: float) -> float:
-        # TODO: Subtract amount from balance
-        # TODO: Raise ValueError if amount > balance
-        pass
+        # : Subtract amount from balance
+        # Raise ValueError if amount > balance
+        if amount > self.balance:
+            raise ValueError("Not enough funds")
+        self.balance -= amount
+        return self.balance
 
     def get_info(self) -> str:
-        # TODO: Return string like "Account A001 (Alice): $100.00"
-        pass
+        #  Return string like "Account A001 (Alice): $100.00"
+        return f"Account {self.account_number}, owner: {self.owner}, balance: ${self.balance:.2f}"
 
 
 # =============================================================================
@@ -133,13 +143,12 @@ Example:
 
 class Temperature:
     def __init__(self, celsius: float):
-        # TODO: Initialize celsius attribute
-        pass
+        self.celsius = celsius
 
     @classmethod
     def from_fahrenheit(cls, fahrenheit: float) -> "Temperature":
         # TODO: Convert F to C and create Temperature instance
-        pass
+        pass C = (F - 32) * 5/9
 
     @classmethod
     def from_kelvin(cls, kelvin: float) -> "Temperature":
