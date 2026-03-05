@@ -147,21 +147,22 @@ class Temperature:
 
     @classmethod
     def from_fahrenheit(cls, fahrenheit: float) -> "Temperature":
-        # TODO: Convert F to C and create Temperature instance
-        pass C = (F - 32) * 5/9
+        celsius = (fahrenheit - 32) * 5 / 9
+        return cls(celsius)
 
     @classmethod
     def from_kelvin(cls, kelvin: float) -> "Temperature":
-        # TODO: Convert K to C and create Temperature instance
-        pass
+        # Convert K to C and create Temperature instance
+        celsius = kelvin - 273.15
+        return cls(celsius)
 
     def to_fahrenheit(self) -> float:
-        # TODO: Return temperature in Fahrenheit
-        pass
+        #  Return temperature in Fahrenheit
+        return self.celsius * 9 / 5 + 32
 
     def to_kelvin(self) -> float:
-        # TODO: Return temperature in Kelvin
-        pass
+        #  Return temperature in Kelvin
+        return self.celsius + 273.15
 
 
 # =============================================================================
@@ -213,47 +214,53 @@ Example:
 
 class Employee:
     def __init__(self, name: str, employee_id: str, base_salary: float):
-        # TODO: Initialize attributes
-        pass
+        # Initialize attributes
+        self.name = name
+        self.employee_id = employee_id
+        self.base_salary = base_salary
+
 
     def get_annual_salary(self) -> float:
-        # TODO: Return base_salary
-        pass
+        #  Return base_salary
+        return self.base_salary
 
     def get_info(self) -> str:
-        # TODO: Return formatted string
-        pass
+        #  Return formatted string
+        return f"ID: {self.employee_id} - {self.name}"
 
 
 class Manager(Employee):
     def __init__(self, name: str, employee_id: str, base_salary: float,
                  department: str, bonus: float = 0):
-        # TODO: Call parent constructor with super()
-        # TODO: Initialize department and bonus
-        pass
+        #  Call parent constructor with super()
+        super().__init__(name, employee_id, base_salary)
+        #  Initialize department and bonus
+        self.department = department
+        self.bonus = bonus
 
     def get_annual_salary(self) -> float:
-        # TODO: Return base_salary + bonus
-        pass
+        #  Return base_salary + bonus
+        return self.base_salary + self.bonus
 
     def get_info(self) -> str:
-        # TODO: Return formatted string with Manager info
-        pass
+        #  Return formatted string with Manager info
+        return f"ID: {self.employee_id} - {self.name} : Manager, {self.department}"
 
 
 class Developer(Employee):
     def __init__(self, name: str, employee_id: str, base_salary: float,
                  programming_languages: list = None):
-        # TODO: Call parent constructor with super()
-        # TODO: Initialize programming_languages (use empty list if None)
-        pass
+        # Call parent constructor with super()
+        super().__init__(name, employee_id, base_salary)
+        # : Initialize programming_languages (use empty list if None)
+        self.programming_languages = programming_languages if programming_languages is not None else []
 
     def add_language(self, language: str) -> None:
-        # TODO: Add language to the list
-        pass
+        #  Add language to the list
+        self.programming_languages.append(language)
 
     def get_info(self) -> str:
-        # TODO: Return formatted string with Developer info
-        pass
+        #  Return formatted string with Developer info
+        return f"ID: {self.employee_id} - {self.name} (Developer)"
 
 
