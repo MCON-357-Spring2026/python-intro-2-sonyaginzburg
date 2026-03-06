@@ -104,7 +104,7 @@ def search_items(items: list, **criteria) -> list:
                     break
         if match:
             results.append(item)
-        return results
+    return results
 
 
 # =============================================================================
@@ -276,17 +276,31 @@ class Library:
 
     def load(self) -> None:
         """Load books and borrowers from JSON files."""
-        # TODO: Load books from self.books_file
-        # TODO: Load borrowers from self.borrowers_file
+        #  Load books from self.books_file
         # Hint: Use try/except to handle files not existing
-        pass
+        try:
+            with open(self.books_file, "r", encoding= "utf-8") as file:
+                books_data = json.load(file)
+                self.books = {b["book_id"]: Book.from_dict(b) for b in books_data}
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.books = {}
+        # Load borrowers from self.borrowers_file
+        try:
+            with open(self.borrowers_file, "r", encoding= "utf-8") as file:
+                borrowers_data = json.load(file)
+                self.borrowers = {b["borrower_id"]: Borrower.from_dict(b) for b in borrowers_data}
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.borrowers = {}
 
     def save(self) -> None:
         """Save books and borrowers to JSON files."""
-        # TODO: Save self.books to self.books_file
-        # TODO: Save self.borrowers to self.borrowers_file
+        #  Save self.books to self.books_file
+        with open(self.books_file, "w", encoding= "utf-8") as file:
+            json.dump([b.to_dict() for b in self.books.values()], file, indent=2)
+        #  Save self.borrowers to self.borrowers_file
         # Hint: Convert Book/Borrower objects to dicts using to_dict()
-        pass
+        with open(self.borrowers_file, "w", encoding= "utf-8") as file:
+            json.dump([b.to_dict() for b in self.borrowers.values()], file, indent=2)
 
     def add_book(self, title: str, author: str, genre: str) -> Book:
         """Add a new book to the library."""
@@ -334,11 +348,22 @@ class Library:
         Borrower returns a book.
         Returns False if book/borrower not found or book wasn't borrowed by this person.
         """
-        # TODO: Validate book and borrower exist
-        # TODO: Validate book is in borrower's borrowed_books
-        # TODO: Update book.available, remove from borrowed_books
-        # TODO: Save and return True
-        pass
+        # : Validate book and borrower exist
+        if book_id not in self.books or borrower_id not in self.borrowers:
+            return False
+        book = self.books[book_id]
+        borrower = self.borrowers[borrower_id]
+
+        if book_id not in borrower.borrowed_books:
+            return False
+        book.available = True
+        borrower.return_book(book_id)
+        self.save()
+        return True
+
+
+
+
 
     def search_books(self, **criteria) -> list:
         """Search books by any criteria (title, author, genre, available)."""
@@ -355,20 +380,36 @@ class Library:
 
     def get_borrower_books(self, borrower_id: str) -> list:
         """Get list of books currently borrowed by a borrower."""
-        # TODO: Get borrower, return list of Book objects for their borrowed_books
-        pass
+        #  Get borrower, return list of Book objects for their borrowed_books
+        if borrower_id not in self.borrowers:
+            return []
+        borrower = self.borrowers[borrower_id]
+        return [self.books[b_id] for b_id in borrower.borrowed_books]
 
     def get_statistics(self) -> dict:
         """
         Return library statistics.
         Uses the concepts of dict comprehension and aggregation.
         """
-        # TODO: Return dict with:
+        # Return dict with:
         # - total_books: total number of books
+        total_books = len(self.books)
         # - available_books: number of available books
+        available_books = len(self.get_available_books())
         # - checked_out: number of checked out books
+        checked_out = total_books - available_books
         # - total_borrowers: number of borrowers
+        total_borrowers = len(self.borrowers)
         # - books_by_genre: dict of genre -> count
-        pass
+        books_by_genre = {}
+        for b in self.books.values():
+            books_by_genre[b.genre] = books_by_genre.get(b.genre, 0) + 1
+        return {
+            "total_books": total_books,
+            "available_books": available_books,
+            "checked_out": checked_out,
+            "total_borrowers": total_borrowers,
+            "books_by_genre": books_by_genre
+        }
 
 
